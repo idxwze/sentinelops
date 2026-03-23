@@ -1,0 +1,162 @@
+{
+  "checkout-latency-spike": [
+    {
+      "title_en": "Database connection pool exhaustion",
+      "title_fr": "Epuisement du pool de connexions base de donnees",
+      "confidence_score": 89,
+      "risk_color": "#ef4444",
+      "explanation_en": "Checkout worker concurrency increased quickly and active sessions on orders-db rose in the same window. Latency climbed before hard failures, which fits saturation rather than an immediate code crash.",
+      "explanation_fr": "La concurrence des workers checkout a rapidement augmente et les sessions actives sur orders-db ont monte dans la meme fenetre. La latence a grimpe avant les echecs francs, ce qui correspond a une saturation plutot qu'a un crash de code immediat.",
+      "recommended_action_en": "Inspect database pool utilization and temporarily roll back worker concurrency to confirm whether latency normalizes.",
+      "recommended_action_fr": "Inspectez l'utilisation du pool base de donnees et revenez temporairement a la concurrence precedente pour confirmer si la latence se normalise."
+    },
+    {
+      "title_en": "Payment confirmation slowdown",
+      "title_fr": "Ralentissement de confirmation de paiement",
+      "confidence_score": 71,
+      "risk_color": "#f97316",
+      "explanation_en": "Payment confirmation latency is elevated, which can lengthen checkout completion even if the checkout service itself is still processing requests.",
+      "explanation_fr": "La latence de confirmation de paiement est elevee, ce qui peut allonger la finalisation du checkout meme si le service checkout continue a traiter les requetes.",
+      "recommended_action_en": "Compare checkout latency against payment confirmation latency and isolate whether one payment region is materially worse.",
+      "recommended_action_fr": "Comparez la latence checkout a la latence de confirmation paiement et isolez si une region paiement est nettement pire."
+    },
+    {
+      "title_en": "Deployment regression in checkout worker",
+      "title_fr": "Regression de deploiement dans le worker checkout",
+      "confidence_score": 56,
+      "risk_color": "#f59e0b",
+      "explanation_en": "The incident started after a rollout, so code-path regression is plausible, though the telemetry currently fits contention more strongly than functional exceptions.",
+      "explanation_fr": "L'incident a commence apres un deploiement, donc une regression de chemin de code est plausible, meme si la telemetrie correspond actuellement plus fortement a une contention qu'a des exceptions fonctionnelles.",
+      "recommended_action_en": "Review release notes and compare exception volume between the previous and current checkout worker versions.",
+      "recommended_action_fr": "Examinez les notes de version et comparez le volume d'exceptions entre les versions precedente et actuelle du worker checkout."
+    }
+  ],
+  "authentication-failure-burst": [
+    {
+      "title_en": "Auth token validation mismatch",
+      "title_fr": "Desalignement de validation des jetons auth",
+      "confidence_score": 87,
+      "risk_color": "#ef4444",
+      "explanation_en": "Signing-key rotation aligns closely with the error burst, and failures cluster around token validation and session refresh rather than core gateway reachability.",
+      "explanation_fr": "La rotation des cles de signature s'aligne etroitement avec la rafale d'erreurs, et les echecs se concentrent autour de la validation de jeton et du rafraichissement de session plutot que de la joignabilite du gateway.",
+      "recommended_action_en": "Verify active key IDs on issuers and validators, then flush or align any stale verifier caches.",
+      "recommended_action_fr": "Verifiez les ID de cle actifs sur les emetteurs et validateurs, puis videz ou alignez tout cache de validation obsolescent."
+    },
+    {
+      "title_en": "Mobile refresh-session incompatibility",
+      "title_fr": "Incompatibilite du rafraichissement de session mobile",
+      "confidence_score": 68,
+      "risk_color": "#f97316",
+      "explanation_en": "Mobile clients are disproportionately affected, suggesting some refresh or token parsing path may lag behind the backend change.",
+      "explanation_fr": "Les clients mobiles sont affectes de facon disproportionnee, ce qui suggere qu'un chemin de rafraichissement ou de parsing de jeton pourrait etre en retard sur le changement backend.",
+      "recommended_action_en": "Inspect older mobile app versions and compare rejected token claims against the new validator requirements.",
+      "recommended_action_fr": "Inspectez les anciennes versions mobiles et comparez les claims de jeton rejetes aux nouvelles exigences du validateur."
+    },
+    {
+      "title_en": "Credential abuse hidden by retry noise",
+      "title_fr": "Abus d'identifiants masque par le bruit des nouvelles tentatives",
+      "confidence_score": 39,
+      "risk_color": "#f59e0b",
+      "explanation_en": "A smaller abuse pattern could be present, but the strongest telemetry currently points to validation drift rather than attacker-driven failure.",
+      "explanation_fr": "Un motif d'abus plus restreint peut exister, mais la telemetrie la plus forte pointe actuellement vers une derive de validation plutot qu'un echec pilote par un attaquant.",
+      "recommended_action_en": "Check ASN concentration and repeated account targeting only after validator mismatch has been ruled out.",
+      "recommended_action_fr": "Verifiez la concentration ASN et le ciblage repete de comptes seulement apres avoir ecarte le desalignement de validation."
+    }
+  ],
+  "payment-timeout-cascade": [
+    {
+      "title_en": "Upstream payment service timeout",
+      "title_fr": "Timeout du service de paiement amont",
+      "confidence_score": 91,
+      "risk_color": "#ef4444",
+      "explanation_en": "Provider response times began drifting before internal queue depth exploded. The orchestrator appears to be reacting to upstream slowness rather than generating it first.",
+      "explanation_fr": "Les temps de reponse du fournisseur ont commence a deriver avant l'explosion de la profondeur de file interne. L'orchestrateur semble reagir a la lenteur amont plutot que la generer d'abord.",
+      "recommended_action_en": "Compare provider latency by region and temporarily reduce retry pressure while contacting the upstream payment vendor.",
+      "recommended_action_fr": "Comparez la latence du fournisseur par region et reduisez temporairement la pression des nouvelles tentatives tout en contactant le fournisseur paiement amont."
+    },
+    {
+      "title_en": "Retry amplification in payment-orchestrator",
+      "title_fr": "Amplification des nouvelles tentatives dans payment-orchestrator",
+      "confidence_score": 84,
+      "risk_color": "#f97316",
+      "explanation_en": "The retry policy was loosened recently, and queue growth now accelerates with CPU, indicating the internal retry loop is magnifying provider instability.",
+      "explanation_fr": "La politique de nouvelle tentative a ete assouplie recemment, et la croissance de file s'accelere maintenant avec le CPU, indiquant que la boucle interne de relance amplifie l'instabilite du fournisseur.",
+      "recommended_action_en": "Cap retry concurrency and confirm whether queue depth starts decreasing within the next few minutes.",
+      "recommended_action_fr": "Limitez la concurrence des nouvelles tentatives et confirmez si la profondeur de file commence a diminuer dans les prochaines minutes."
+    },
+    {
+      "title_en": "Refund and reconciliation spillover",
+      "title_fr": "Debordement vers remboursement et reconciliation",
+      "confidence_score": 52,
+      "risk_color": "#f59e0b",
+      "explanation_en": "Secondary payment workflows are delayed and could worsen customer impact if not isolated, but they do not appear to be the primary trigger.",
+      "explanation_fr": "Les workflows secondaires de paiement sont retardes et pourraient aggraver l'impact client s'ils ne sont pas isoles, mais ils ne semblent pas etre le declencheur principal.",
+      "recommended_action_en": "Protect refund and reconciliation capacity by rate-limiting non-critical background payment jobs.",
+      "recommended_action_fr": "Protegez la capacite de remboursement et de reconciliation en limitant les travaux paiement de fond non critiques."
+    }
+  ],
+  "suspicious-login-anomaly": [
+    {
+      "title_en": "Suspicious credential abuse",
+      "title_fr": "Abus suspect d'identifiants",
+      "confidence_score": 93,
+      "risk_color": "#ef4444",
+      "explanation_en": "The anomaly is concentrated on privileged accounts, new IP clusters, and failed MFA prompts while infrastructure metrics remain calm. That pattern is strongly consistent with targeted credential abuse.",
+      "explanation_fr": "L'anomalie se concentre sur des comptes privilegies, de nouveaux groupes d'IP et des invites MFA en echec tandis que les metriques d'infrastructure restent calmes. Ce profil est tres coherent avec un abus cible d'identifiants.",
+      "recommended_action_en": "Review top source ASNs, tighten temporary rate limits, and require step-up verification on the targeted account segment.",
+      "recommended_action_fr": "Examinez les principaux ASN sources, renforcez temporairement les limites de debit et imposez une verification renforcee sur le segment de comptes cible."
+    },
+    {
+      "title_en": "Bot traffic bypassing normal baselines",
+      "title_fr": "Trafic bot contournant les references normales",
+      "confidence_score": 74,
+      "risk_color": "#f97316",
+      "explanation_en": "Traffic volume is elevated without the usual user-behavior shape, which suggests automation even though edge filtering is still absorbing part of it.",
+      "explanation_fr": "Le volume de trafic est eleve sans la forme comportementale habituelle des utilisateurs, ce qui suggere une automatisation meme si le filtrage edge en absorbe encore une partie.",
+      "recommended_action_en": "Inspect user-agent diversity, IP reputation, and challenge pass rates for bot signatures.",
+      "recommended_action_fr": "Inspectez la diversite des user-agents, la reputation IP et les taux de reussite des challenges pour detecter des signatures de bot."
+    },
+    {
+      "title_en": "False positive risk model shift",
+      "title_fr": "Derive du modele de risque produisant des faux positifs",
+      "confidence_score": 28,
+      "risk_color": "#f59e0b",
+      "explanation_en": "A detection drift is possible, but the account concentration and MFA behavior make a pure false-positive explanation less convincing.",
+      "explanation_fr": "Une derive de detection est possible, mais la concentration des comptes et le comportement MFA rendent une explication purement faux positif moins convaincante.",
+      "recommended_action_en": "Review the latest risk rule tuning only after attack-shape evidence has been assessed.",
+      "recommended_action_fr": "Examinez le dernier ajustement des regles de risque seulement apres avoir evalue les preuves de forme d'attaque."
+    }
+  ],
+  "database-saturation": [
+    {
+      "title_en": "Workload overlap on primary database",
+      "title_fr": "Chevauchement de charges sur la base primaire",
+      "confidence_score": 90,
+      "risk_color": "#ef4444",
+      "explanation_en": "The BI export schedule moved into the order-processing ramp, and CPU, lock wait, and active sessions all rose together. The database is saturated rather than unavailable.",
+      "explanation_fr": "L'horaire d'export BI a glisse dans la montee du traitement des commandes, et CPU, attente de verrous et sessions actives ont tous augmente ensemble. La base est saturee plutot qu'indisponible.",
+      "recommended_action_en": "Pause or throttle the BI export and confirm whether primary database CPU and lock waits return toward baseline.",
+      "recommended_action_fr": "Mettez en pause ou limitez l'export BI et confirmez si le CPU de la base primaire et l'attente de verrous reviennent vers la normale."
+    },
+    {
+      "title_en": "Lock contention on hot order tables",
+      "title_fr": "Contention de verrous sur les tables de commandes chaudes",
+      "confidence_score": 77,
+      "risk_color": "#f97316",
+      "explanation_en": "As concurrency increased, lock wait time rose sharply on a narrow set of order tables, increasing latency even before overall failure rates peaked.",
+      "explanation_fr": "A mesure que la concurrence a augmente, le temps d'attente de verrous a fortement monte sur un ensemble restreint de tables de commandes, augmentant la latence avant meme que les taux d'echec globaux n'atteignent leur pic.",
+      "recommended_action_en": "Inspect the longest-running transactions and lock graphs for the busiest order-processing tables.",
+      "recommended_action_fr": "Inspectez les transactions les plus longues et les graphes de verrous pour les tables de traitement de commandes les plus sollicitees."
+    },
+    {
+      "title_en": "Replica lag causing read spillback",
+      "title_fr": "Retard de replica provoquant un retour des lectures",
+      "confidence_score": 41,
+      "risk_color": "#f59e0b",
+      "explanation_en": "Replica lag is present and could force extra reads onto the primary, but the timing still suggests the BI overlap triggered the main event.",
+      "explanation_fr": "Un retard de replica est present et pourrait renvoyer des lectures vers la primaire, mais le timing suggere toujours que le chevauchement BI a declenche l'evenement principal.",
+      "recommended_action_en": "Validate whether any read traffic automatically failed back to primary during the peak window.",
+      "recommended_action_fr": "Validez si du trafic de lecture est automatiquement revenu vers la primaire pendant la fenetre de pic."
+    }
+  ]
+}

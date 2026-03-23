@@ -1,0 +1,102 @@
+{
+  "checkout-latency-spike": {
+    "timestamps": ["08:05", "08:10", "08:15", "08:20", "08:25", "08:30", "08:35", "08:40", "08:45", "08:50", "08:55", "09:00"],
+    "current_stats": {
+      "latency_ms": 1840,
+      "error_rate_pct": 9.2,
+      "cpu_pct": 81.0,
+      "request_volume_rpm": 12650
+    },
+    "series": {
+      "latency_ms": [410, 430, 450, 490, 560, 720, 980, 1230, 1560, 1740, 1880, 1840],
+      "error_rate_pct": [0.8, 0.9, 1.1, 1.4, 1.9, 2.8, 4.3, 5.8, 7.1, 8.4, 9.6, 9.2],
+      "cpu_pct": [44, 46, 48, 52, 56, 63, 68, 72, 76, 82, 85, 81],
+      "request_volume_rpm": [10200, 10650, 10920, 11110, 11480, 11800, 12040, 12320, 12680, 12890, 12740, 12650]
+    },
+    "dependency_health": [
+      {"name": "orders-db", "status": "Degraded", "impact_en": "Connection pool nearing saturation and queueing transaction requests.", "impact_fr": "Le pool de connexions approche de la saturation et met les transactions en file."},
+      {"name": "payment-gateway", "status": "Monitoring", "impact_en": "Confirmation latency is higher than normal but still returning.", "impact_fr": "La latence de confirmation est superieure a la normale mais les reponses arrivent encore."},
+      {"name": "cart-cache", "status": "Healthy", "impact_en": "Cache hit rate remains stable and is not driving the incident.", "impact_fr": "Le taux de hit du cache reste stable et ne pilote pas l'incident."}
+    ]
+  },
+  "authentication-failure-burst": {
+    "timestamps": ["07:40", "07:45", "07:50", "07:55", "08:00", "08:05", "08:10", "08:15", "08:20", "08:25", "08:30", "08:35"],
+    "current_stats": {
+      "latency_ms": 480,
+      "error_rate_pct": 12.8,
+      "cpu_pct": 54.0,
+      "request_volume_rpm": 18220
+    },
+    "series": {
+      "latency_ms": [210, 215, 218, 225, 240, 265, 310, 360, 420, 455, 490, 480],
+      "error_rate_pct": [1.2, 1.3, 1.6, 1.9, 2.8, 4.2, 6.8, 8.9, 10.7, 12.4, 13.1, 12.8],
+      "cpu_pct": [34, 36, 37, 39, 42, 45, 47, 49, 52, 55, 56, 54],
+      "request_volume_rpm": [12100, 12440, 12880, 13350, 14120, 15010, 16180, 17050, 17620, 18110, 18400, 18220]
+    },
+    "dependency_health": [
+      {"name": "token-validator", "status": "Degraded", "impact_en": "Validation misses and fallback cache lookups are increasing.", "impact_fr": "Les echecs de validation et les recherches de cache de secours augmentent."},
+      {"name": "session-store", "status": "Healthy", "impact_en": "Session reads are normal and not the first driver of user impact.", "impact_fr": "Les lectures de session sont normales et ne sont pas le premier moteur d'impact utilisateur."},
+      {"name": "mobile-refresh-service", "status": "Monitoring", "impact_en": "Refresh requests are elevated and skewed toward older app versions.", "impact_fr": "Les requetes de rafraichissement sont elevees et biaisent vers d'anciennes versions d'application."}
+    ]
+  },
+  "payment-timeout-cascade": {
+    "timestamps": ["07:00", "07:05", "07:10", "07:15", "07:20", "07:25", "07:30", "07:35", "07:40", "07:45", "07:50", "07:55"],
+    "current_stats": {
+      "latency_ms": 2410,
+      "error_rate_pct": 14.9,
+      "cpu_pct": 88.0,
+      "request_volume_rpm": 9420
+    },
+    "series": {
+      "latency_ms": [620, 680, 760, 910, 1180, 1450, 1690, 1880, 2050, 2260, 2440, 2410],
+      "error_rate_pct": [1.0, 1.4, 2.0, 2.8, 4.0, 5.9, 7.6, 9.8, 11.5, 13.3, 15.1, 14.9],
+      "cpu_pct": [48, 51, 55, 59, 63, 68, 72, 77, 82, 86, 89, 88],
+      "request_volume_rpm": [8340, 8520, 8610, 8790, 8950, 9140, 9360, 9550, 9670, 9580, 9460, 9420]
+    },
+    "dependency_health": [
+      {"name": "psp-gateway-eu", "status": "Failed", "impact_en": "Timeout ratio is elevated and retry storms are concentrating here.", "impact_fr": "Le ratio de timeout est eleve et les tempetes de relance se concentrent ici."},
+      {"name": "retry-queue", "status": "Degraded", "impact_en": "Queue depth is growing faster than workers can drain.", "impact_fr": "La profondeur de file augmente plus vite que les workers ne peuvent la vider."},
+      {"name": "refund-service", "status": "Monitoring", "impact_en": "Dependent workflows are delayed but still processing.", "impact_fr": "Les workflows dependants sont retardes mais continuent de traiter."}
+    ]
+  },
+  "suspicious-login-anomaly": {
+    "timestamps": ["05:45", "05:50", "05:55", "06:00", "06:05", "06:10", "06:15", "06:20", "06:25", "06:30", "06:35", "06:40"],
+    "current_stats": {
+      "latency_ms": 190,
+      "error_rate_pct": 3.6,
+      "cpu_pct": 32.0,
+      "request_volume_rpm": 15420
+    },
+    "series": {
+      "latency_ms": [176, 180, 179, 182, 185, 188, 190, 191, 194, 196, 192, 190],
+      "error_rate_pct": [0.7, 0.9, 1.1, 1.6, 2.0, 2.5, 3.1, 3.8, 4.2, 4.0, 3.7, 3.6],
+      "cpu_pct": [26, 27, 27, 28, 29, 30, 30, 31, 33, 34, 33, 32],
+      "request_volume_rpm": [9800, 10120, 10460, 11310, 12180, 13040, 13890, 14430, 14950, 15510, 15680, 15420]
+    },
+    "dependency_health": [
+      {"name": "risk-scoring", "status": "Healthy", "impact_en": "Rules and anomaly scoring remain responsive.", "impact_fr": "Les regles et le scoring d'anomalie restent reactifs."},
+      {"name": "mfa-challenge", "status": "Monitoring", "impact_en": "Challenge issuance is normal but completion rate is dropping.", "impact_fr": "L'emission des challenges est normale mais le taux de completion baisse."},
+      {"name": "edge-waf", "status": "Healthy", "impact_en": "Traffic filtering is active and supporting containment.", "impact_fr": "Le filtrage de trafic est actif et contribue au confinement."}
+    ]
+  },
+  "database-saturation": {
+    "timestamps": ["04:30", "04:35", "04:40", "04:45", "04:50", "04:55", "05:00", "05:05", "05:10", "05:15", "05:20", "05:25"],
+    "current_stats": {
+      "latency_ms": 930,
+      "error_rate_pct": 4.7,
+      "cpu_pct": 86.0,
+      "request_volume_rpm": 10940
+    },
+    "series": {
+      "latency_ms": [280, 320, 360, 410, 520, 670, 810, 980, 1110, 1060, 980, 930],
+      "error_rate_pct": [0.9, 1.0, 1.2, 1.5, 2.0, 2.9, 4.1, 5.6, 6.4, 5.9, 5.1, 4.7],
+      "cpu_pct": [42, 46, 50, 57, 63, 71, 80, 89, 92, 90, 88, 86],
+      "request_volume_rpm": [8460, 8610, 8860, 9150, 9560, 9930, 10220, 10640, 11010, 11140, 11020, 10940]
+    },
+    "dependency_health": [
+      {"name": "orders-replica", "status": "Monitoring", "impact_en": "Replica lag is visible but no failover is required.", "impact_fr": "Le retard de la replica est visible mais aucun basculement n'est necessaire."},
+      {"name": "bi-export", "status": "Degraded", "impact_en": "Analytical queries are contributing disproportionate CPU and lock pressure.", "impact_fr": "Les requetes analytiques contribuent de maniere disproportionnee a la pression CPU et aux verrous."},
+      {"name": "checkout-api", "status": "Monitoring", "impact_en": "Application latency is recovering but remains sensitive to query spikes.", "impact_fr": "La latence applicative se retablit mais reste sensible aux pics de requetes."}
+    ]
+  }
+}
